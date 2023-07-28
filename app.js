@@ -134,6 +134,17 @@ app.get("/states/:stateId/stats/", async (request, response) => {
 });
 
 // API 8
-app.get("/districts/:districtId/details/", async(request,response)=>{
-    const
+app.get("/districts/:districtId/details/", async (request, response) => {
+  const { districtId } = request.params;
+  const getQuery = `
+        SELECT state.state_name FROM state INNER JOIN district ON state.state_id = district.state_id
+        WHERE district_id = ${districtId};`;
+  try {
+    const x = await db.get(getQuery);
+    response.send(camelCase(x));
+  } catch (e) {
+    console.log(`${e.message}`);
+  }
 });
+
+module.exports = app;
